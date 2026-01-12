@@ -53,20 +53,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 15px;
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: bold;
-            padding: 8px 16px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.1);
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
-        .hiqasc { color: #5dade2; }
-        .nespresso { color: #d4a574; }
+        .hiqasc { color: #718096; }
+        .nespresso { color: #a0aec0; }
 
         h1 {
             font-size: 28px;
@@ -347,7 +345,7 @@
                 <span class="logo hiqasc">HIQASC</span>
                 <span class="logo nespresso">Nespresso</span>
             </div>
-            <h1>⏰ 추가 근로 신청</h1>
+            <h1>📋 추가 근로 신청</h1>
             <p class="subtitle">정규 업무 시간 외 조근 및 야근 신청</p>
         </div>
 
@@ -427,6 +425,10 @@
                     </div>
                 </div>
 
+                <div id="hoursDisplay" style="display: none; padding: 12px; background: #e6f7ff; border-radius: 8px; text-align: center; margin-bottom: 20px; border-left: 4px solid #5dade2;">
+                    <strong style="color: #2c3e50; font-size: 16px;">총 근무시간: <span id="totalHours">0</span>시간</strong>
+                </div>
+
                 <div class="form-group">
                     <label for="reason">사유 / 업무 내용 *</label>
                     <textarea id="reason" required placeholder="추가 근로가 필요한 사유나 수행할 업무 내용을 입력해주세요"></textarea>
@@ -480,7 +482,7 @@
 
     <script>
         // Google Apps Script Web App URL (배포 후 입력)
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyk65DEPnROs8XDfwse-T55JoWfYLAj1ZxxAQ58IUMTtk72qhxEeKo5vkrL3Sc7lEThjw/exec';
+        const SCRIPT_URL = 'YOUR_SCRIPT_URL_HERE';
 
         const form = document.getElementById('overtimeForm');
         const typeSelect = document.getElementById('type');
@@ -584,6 +586,30 @@
 
         nameSelect.addEventListener('change', checkWeeklyHours);
         dateInput.addEventListener('change', checkWeeklyHours);
+
+        // 시간 선택 시 총 근무시간 계산
+        startTimeSelect.addEventListener('change', calculateHours);
+        endTimeSelect.addEventListener('change', calculateHours);
+
+        function calculateHours() {
+            const startTime = startTimeSelect.value;
+            const endTime = endTimeSelect.value;
+            
+            if (startTime && endTime) {
+                const start = new Date(`2000-01-01 ${startTime}`);
+                const end = new Date(`2000-01-01 ${endTime}`);
+                const hours = (end - start) / (1000 * 60 * 60);
+                
+                if (hours > 0) {
+                    document.getElementById('totalHours').textContent = hours;
+                    document.getElementById('hoursDisplay').style.display = 'block';
+                } else {
+                    document.getElementById('hoursDisplay').style.display = 'none';
+                }
+            } else {
+                document.getElementById('hoursDisplay').style.display = 'none';
+            }
+        }
 
         // 폼 제출
         form.addEventListener('submit', async function(e) {
