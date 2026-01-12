@@ -15,50 +15,32 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #3d4e5c 0%, #2c3e50 100%);
             min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 15px;
         }
 
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            max-width: 600px;
-            width: 100%;
-            overflow: hidden;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
         .header {
-            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .logo-section {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-bottom: 8px;
         }
 
         .logo {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
@@ -67,37 +49,43 @@
         .nespresso { color: #a0aec0; }
 
         h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+            text-align: center;
+            color: #2d3748;
+            font-size: 22px;
+            margin-bottom: 6px;
         }
 
         .subtitle {
-            opacity: 0.9;
-            font-size: 14px;
+            text-align: center;
+            color: #718096;
+            font-size: 12px;
         }
 
         .form-container {
-            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             color: #2d3748;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         select, input[type="date"], input[type="time"], textarea {
             width: 100%;
-            padding: 12px;
+            padding: 7px;
             border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 12px;
             transition: all 0.3s;
             font-family: inherit;
         }
@@ -116,53 +104,55 @@
         .time-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 10px;
         }
 
         .info-box {
             background: #ecf5fb;
             border-left: 4px solid #5dade2;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            font-size: 14px;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 12px;
             color: #2d3748;
         }
 
         .info-box strong {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             color: #2980b9;
+            font-size: 12px;
         }
 
         .warning-box {
             background: #fff5f5;
             border-left: 4px solid #fc8181;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            font-size: 14px;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 12px;
             color: #742a2a;
         }
 
         .submit-btn {
             width: 100%;
-            padding: 16px;
+            padding: 12px;
             background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 18px;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-top: 10px;
         }
 
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(52, 73, 94, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(52, 73, 94, 0.4);
             background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
         }
 
@@ -178,24 +168,25 @@
 
         .footer {
             text-align: center;
-            padding: 20px;
-            background: #f7fafc;
-            color: #718096;
-            font-size: 12px;
+            padding: 15px;
+            color: white;
+            opacity: 0.8;
+            font-size: 11px;
+            margin-top: 15px;
         }
 
         .loading {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #5dade2;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #5dade2;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
@@ -207,11 +198,12 @@
 
         .success-message, .error-message {
             display: none;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
             text-align: center;
             font-weight: 600;
+            font-size: 12px;
         }
 
         .success-message {
@@ -227,18 +219,32 @@
         }
 
         #weeklyHoursDisplay {
-            font-size: 16px;
+            font-size: 13px;
             font-weight: bold;
             color: #2d3748;
-            padding: 10px;
+            padding: 8px;
             background: #edf2f7;
-            border-radius: 8px;
+            border-radius: 6px;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .overtime-limit {
             color: #e53e3e;
+        }
+
+        #hoursDisplay {
+            padding: 10px;
+            background: #e6f7ff;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 15px;
+            border-left: 4px solid #5dade2;
+        }
+
+        #hoursDisplay strong {
+            color: #2c3e50;
+            font-size: 14px;
         }
 
         /* 팝업 모달 스타일 */
@@ -263,16 +269,16 @@
             background-color: white;
             margin: 15% auto;
             padding: 0;
-            border-radius: 15px;
+            border-radius: 12px;
             width: 90%;
-            max-width: 400px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            max-width: 350px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
             animation: slideDown 0.3s ease-out;
         }
 
         @keyframes slideDown {
             from {
-                transform: translateY(-50px);
+                transform: translateY(-30px);
                 opacity: 0;
             }
             to {
@@ -284,8 +290,8 @@
         .modal-header {
             background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
             color: white;
-            padding: 25px;
-            border-radius: 15px 15px 0 0;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
             text-align: center;
         }
 
@@ -294,47 +300,48 @@
         }
 
         .modal-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
+            font-size: 40px;
+            margin-bottom: 8px;
         }
 
         .modal-title {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             margin: 0;
         }
 
         .modal-body {
-            padding: 30px;
+            padding: 20px;
             text-align: center;
             color: #2d3748;
             line-height: 1.6;
+            font-size: 13px;
         }
 
         .modal-body strong {
             display: block;
-            margin-top: 15px;
-            font-size: 16px;
+            margin-top: 12px;
+            font-size: 14px;
             color: #4a5568;
         }
 
         .modal-button {
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .modal-button:hover {
             background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
     </style>
 </head>
@@ -425,8 +432,8 @@
                     </div>
                 </div>
 
-                <div id="hoursDisplay" style="display: none; padding: 12px; background: #e6f7ff; border-radius: 8px; text-align: center; margin-bottom: 20px; border-left: 4px solid #5dade2;">
-                    <strong style="color: #2c3e50; font-size: 16px;">총 근무시간: <span id="totalHours">0</span>시간</strong>
+                <div id="hoursDisplay" style="display: none;">
+                    <strong>총 근무시간: <span id="totalHours">0</span>시간</strong>
                 </div>
 
                 <div class="form-group">
@@ -481,8 +488,8 @@
     </div>
 
     <script>
-        // Google Apps Script Web App  (배포 후 입력)
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyk65DEPnROs8XDfwse-T55JoWfYLAj1ZxxAQ58IUMTtk72qhxEeKo5vkrL3Sc7lEThjw/exec';
+        // Google Apps Script Web App URL (배포 후 입력)
+        const SCRIPT_URL = 'YOUR_SCRIPT_URL_HERE';
 
         const form = document.getElementById('overtimeForm');
         const typeSelect = document.getElementById('type');
