@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 770px;
             margin: 0 auto;
         }
 
@@ -247,6 +247,67 @@
             font-size: 14px;
         }
 
+        #weeklyProgressDisplay {
+            padding: 12px;
+            background: #f0f9ff;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 15px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        #weeklyProgressDisplay .progress-text {
+            color: #1e40af;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        #weeklyProgressDisplay .progress-bar-container {
+            background: #dbeafe;
+            height: 24px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            margin-top: 8px;
+        }
+
+        #weeklyProgressDisplay .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        #weeklyProgressDisplay .progress-bar.warning {
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        #weeklyProgressDisplay .progress-bar.danger {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        /* 애니메이션 추가 */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #weeklyProgressDisplay {
+            animation: slideIn 0.3s ease-out;
+        }
+
         /* 팝업 모달 스타일 */
         .modal {
             display: none;
@@ -436,6 +497,18 @@
                     <strong>총 근무시간: <span id="totalHours">0</span>시간</strong>
                 </div>
 
+                <!-- 주간 신청 현황 -->
+                <div id="weeklyProgressDisplay" style="display: none;">
+                    <div class="progress-text">
+                        <span id="weeklyUsedHours">0</span>시간 / 12시간 신청 가능
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar" style="width: 0%;">
+                            <span id="progressPercent">0%</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="reason">사유 / 업무 내용 *</label>
                     <textarea id="reason" required placeholder="추가 근로가 필요한 사유나 수행할 업무 내용을 입력해주세요"></textarea>
@@ -489,7 +562,7 @@
 
     <script>
         // Google Apps Script Web App URL (배포 후 입력)
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyk65DEPnROs8XDfwse-T55JoWfYLAj1ZxxAQ58IUMTtk72qhxEeKo5vkrL3Sc7lEThjw/exec';
+        const SCRIPT_URL = 'YOUR_SCRIPT_URL_HERE';
 
         const form = document.getElementById('overtimeForm');
         const typeSelect = document.getElementById('type');
@@ -565,6 +638,7 @@
             
             if (!name || !date) {
                 weeklyHoursDisplay.style.display = 'none';
+                document.getElementById('weeklyProgressDisplay').style.display = 'none';
                 return;
             }
 
@@ -573,17 +647,40 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    const hours = data.hours || 0;
-                    weeklyHoursDisplay.style.display = 'block';
+                    const weeklyHours = data.hours || 0;
+                    const remainingHours = 12 - weeklyHours;
+                    const percentage = Math.min((weeklyHours / 12) * 100, 100);
+
+                    // 주간 프로그레스 표시
+                    document.getElementById('weeklyUsedHours').textContent = weeklyHours;
+                    document.getElementById('progressPercent').textContent = Math.round(percentage) + '%';
                     
-                    if (hours >= 12) {
+                    const progressBar = document.getElementById('progressBar');
+                    progressBar.style.width = percentage + '%';
+                    
+                    // 색상 변경
+                    progressBar.className = 'progress-bar';
+                    if (percentage >= 100) {
+                        progressBar.classList.add('danger');
+                    } else if (percentage >= 80) {
+                        progressBar.classList.add('warning');
+                    }
+                    
+                    document.getElementById('weeklyProgressDisplay').style.display = 'block';
+                    
+                    // 기존 경고 메시지
+                    if (weeklyHours >= 12) {
                         weeklyHoursDisplay.innerHTML = `
-                            <span class="overtime-limit">⚠️ 이번 주 누적: ${hours}시간 (최대 12시간 초과)</span>
+                            <span class="overtime-limit">⚠️ 이번 주 누적: ${weeklyHours}시간 (최대 12시간 초과)</span>
                         `;
+                        weeklyHoursDisplay.style.display = 'block';
+                    } else if (weeklyHours >= 10) {
+                        weeklyHoursDisplay.innerHTML = `
+                            ⚠️ 이번 주 누적: ${weeklyHours}시간 / 12시간 (남은 시간: <span class="overtime-limit">${remainingHours}시간</span>)
+                        `;
+                        weeklyHoursDisplay.style.display = 'block';
                     } else {
-                        weeklyHoursDisplay.innerHTML = `
-                            이번 주 누적: ${hours}시간 / 12시간 (남은 시간: ${12 - hours}시간)
-                        `;
+                        weeklyHoursDisplay.style.display = 'none';
                     }
                 }
             } catch (error) {
