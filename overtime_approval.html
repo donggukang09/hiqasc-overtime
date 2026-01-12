@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 770px;
             margin: 0 auto;
         }
 
@@ -413,8 +413,8 @@
     </div>
 
     <script>
-        // Google Apps Script Web App  (배포 후 입력)
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyk65DEPnROs8XDfwse-T55JoWfYLAj1ZxxAQ58IUMTtk72qhxEeKo5vkrL3Sc7lEThjw/exec';
+        // Google Apps Script Web App URL (배포 후 입력)
+        const SCRIPT_URL = 'YOUR_SCRIPT_URL_HERE';
 
         let allRequests = [];
 
@@ -431,21 +431,54 @@
             document.getElementById('loading').style.display = 'block';
             document.getElementById('requestsList').innerHTML = '';
 
+            // URL 체크
+            if (SCRIPT_URL === 'YOUR_SCRIPT_URL_HERE') {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('requestsList').innerHTML = `
+                    <div class="empty-state">
+                        <p style="font-size: 42px;">⚙️</p>
+                        <p style="font-size: 16px; margin-top: 12px; color: #ed8936;">Google Apps Script URL을 설정해주세요</p>
+                        <p style="font-size: 12px; margin-top: 8px; color: #718096;">
+                            1. Google Apps Script 배포<br>
+                            2. 웹 앱 URL 복사<br>
+                            3. HTML 파일의 SCRIPT_URL에 붙여넣기
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
             try {
                 const response = await fetch(SCRIPT_URL + '?action=getRequests');
+                
+                // 응답 체크
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('응답이 JSON 형식이 아닙니다. Apps Script 배포를 확인해주세요.');
+                }
+                
                 const data = await response.json();
                 
                 if (data.success) {
                     allRequests = data.requests || [];
                     renderRequests();
                     updateStats();
+                } else {
+                    throw new Error(data.message || '데이터 로드 실패');
                 }
             } catch (error) {
                 console.error('Error loading requests:', error);
                 document.getElementById('requestsList').innerHTML = `
                     <div class="empty-state">
                         <p style="font-size: 16px; color: #e53e3e;">⚠️ 데이터를 불러오는데 실패했습니다.</p>
-                        <p style="margin-top: 8px; font-size: 12px;">Google Apps Script URL을 확인해주세요.</p>
+                        <p style="margin-top: 8px; font-size: 12px; color: #718096;">${error.message}</p>
+                        <p style="margin-top: 12px; font-size: 12px; color: #718096;">
+                            Google Apps Script URL과 배포 상태를 확인해주세요.
+                        </p>
                     </div>
                 `;
             } finally {
