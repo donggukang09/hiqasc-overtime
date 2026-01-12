@@ -500,7 +500,7 @@
                 <!-- 주간 신청 현황 -->
                 <div id="weeklyProgressDisplay" style="display: none;">
                     <div class="progress-text">
-                        <span id="weeklyUsedHours">0</span>시간 / 12시간 신청 가능
+                        신청된 시간: <span id="weeklyUsedHours">0</span>시간 / 신청 가능: <span id="weeklyRemainingHours">12</span>시간
                     </div>
                     <div class="progress-bar-container">
                         <div class="progress-bar" id="progressBar" style="width: 0%;">
@@ -631,6 +631,39 @@
             }
         });
 
+        // 시작 시간 선택 시 종료 시간 옵션 필터링
+        startTimeSelect.addEventListener('change', function() {
+            const type = typeSelect.value;
+            const startTime = this.value;
+            
+            if (!startTime) {
+                endTimeSelect.innerHTML = '<option value="">선택하세요</option>';
+                return;
+            }
+
+            endTimeSelect.innerHTML = '<option value="">선택하세요</option>';
+            
+            const startHour = parseInt(startTime.split(':')[0]);
+            
+            if (type === '조근') {
+                endTimeSelect.innerHTML += '<option value="09:00">09:00</option>';
+            } else if (type === '야근') {
+                for (let i = 18; i <= 21; i++) {
+                    if (i > startHour) {  // 시작 시간보다 큰 시간만
+                        const time = `${i}:00`;
+                        endTimeSelect.innerHTML += `<option value="${time}">${time}</option>`;
+                    }
+                }
+            } else if (type === '주말') {
+                for (let i = 8; i <= 18; i++) {
+                    if (i > startHour) {  // 시작 시간보다 큰 시간만
+                        const time = `${String(i).padStart(2, '0')}:00`;
+                        endTimeSelect.innerHTML += `<option value="${time}">${time}</option>`;
+                    }
+                }
+            }
+        });
+
         // 주간 근무 시간 조회
         async function checkWeeklyHours() {
             const name = nameSelect.value;
@@ -653,6 +686,7 @@
 
                     // 주간 프로그레스 표시
                     document.getElementById('weeklyUsedHours').textContent = weeklyHours;
+                    document.getElementById('weeklyRemainingHours').textContent = remainingHours;
                     document.getElementById('progressPercent').textContent = Math.round(percentage) + '%';
                     
                     const progressBar = document.getElementById('progressBar');
