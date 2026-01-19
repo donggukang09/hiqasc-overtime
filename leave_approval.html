@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연차 승인 관리 - HIQASC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3d4e5c 0%, #2c3e50 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 770px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .logo-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .hiqasc { color: #718096; }
+        .nespresso { color: #a0aec0; }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 12px;
+        }
+
+        .controls {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-group {
+            flex: 1;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 11px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 7px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .refresh-btn {
+            background: #5dade2;
+            color: white;
+            border: none;
+            padding: 7px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 18px;
+        }
+
+        .refresh-btn:hover {
+            background: #3498db;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-left: 4px solid #cbd5e0;
+        }
+
+        .stat-card.pending { border-left-color: #ed8936; }
+        .stat-card.approved { border-left-color: #48bb78; }
+        .stat-card.rejected { border-left-color: #f56565; }
+
+        .stat-number {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .stat-card.pending .stat-number { color: #ed8936; }
+        .stat-card.approved .stat-number { color: #48bb78; }
+        .stat-card.rejected .stat-number { color: #f56565; }
+
+        .stat-label {
+            font-size: 11px;
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .requests-container {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            min-height: 300px;
+        }
+
+        .request-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .request-card:hover {
+            border-color: #cbd5e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .request-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .request-date {
+            font-size: 10px;
+            color: #718096;
+        }
+
+        .request-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 11px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .info-label {
+            color: #718096;
+        }
+
+        .info-value {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .request-reason {
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #4a5568;
+            margin-bottom: 10px;
+            border-left: 3px solid #cbd5e0;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .approve-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .approve-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .reject-btn {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            color: white;
+        }
+
+        .reject-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 101, 101, 0.4);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #FFF9E6;
+            color: #ed8936;
+        }
+
+        .status-approved {
+            background: #E6F9F0;
+            color: #48bb78;
+        }
+
+        .status-rejected {
+            background: #FFF0F0;
+            color: #f56565;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #5dade2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-state p {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: white;
+            opacity: 0.8;
+            font-size: 11px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-section">
+                <span class="logo hiqasc">HIQASC</span>
+                <span class="logo nespresso">Nespresso</span>
+            </div>
+            <h1>📋 연차 승인 관리</h1>
+            <p class="subtitle">관리자 전용 페이지</p>
+        </div>
+
+        <div class="controls">
+            <div class="filter-group">
+                <label>상태 필터</label>
+                <select id="statusFilter">
+                    <option value="전체">전체</option>
+                    <option value="대기">대기</option>
+                    <option value="승인">승인</option>
+                    <option value="반려">반려</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>신청자 필터</label>
+                <select id="nameFilter">
+                    <option value="전체">전체</option>
+                </select>
+            </div>
+            <button class="refresh-btn" onclick="loadRequests()">🔄 새로고침</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card pending">
+                <div class="stat-number" id="pendingCount">0</div>
+                <div class="stat-label">대기 중</div>
+            </div>
+            <div class="stat-card approved">
+                <div class="stat-number" id="approvedCount">0</div>
+                <div class="stat-label">승인됨</div>
+            </div>
+            <div class="stat-card rejected">
+                <div class="stat-number" id="rejectedCount">0</div>
+                <div class="stat-label">반려됨</div>
+            </div>
+        </div>
+
+        <div class="requests-container">
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>데이터를 불러오는 중...</p>
+            </div>
+            <div id="requestsList"></div>
+        </div>
+
+        <div class="footer">
+            DEVELOPED BY DONGGU KANG © 2026 HIQASC
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzG8UQLph63cSwOZ6Z8aDg-TYgxh_cqTHCYRGowtSF9VlZDqxKiXkcXMGdNSyjnWv60/exec';
+        let allRequests = [];
+
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRequests();
+            
+            document.getElementById('statusFilter').addEventListener('change', renderRequests);
+            document.getElementById('nameFilter').addEventListener('change', renderRequests);
+        });
+
+        // 연차 신청 목록 로드
+        async function loadRequests() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('requestsList').innerHTML = '';
+
+            // URL 체크
+            if (SCRIPT_URL === 'YOUR_SCRIPT_URL_HERE') {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('requestsList').innerHTML = `
+                    <div class="empty-state">
+                        <p style="font-size: 42px;">⚙️</p>
+                        <p style="font-size: 16px; margin-top: 12px; color: #ed8936;">Google Apps Script URL을 설정해주세요</p>
+                        <p style="font-size: 12px; margin-top: 8px; color: #718096;">
+                            1. Google Apps Script 배포<br>
+                            2. 웹 앱 URL 복사<br>
+                            3. HTML 파일의 SCRIPT_URL에 붙여넣기
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch(SCRIPT_URL + '?action=getRequests');
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('응답이 JSON 형식이 아닙니다. Apps Script 배포를 확인해주세요.');
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    allRequests = data.requests || [];
+                    updateNameFilter();
+                    renderRequests();
+                    updateStats();
+                } else {
+                    throw new Error(data.message || '데이터 로드 실패');
+                }
+            } catch (error) {
+                console.error('Error loading requests:', error);
+                document.getElementById('requestsList').innerHTML = `
+                    <div class="empty-state">
+                        <p style="font-size: 16px; color: #e53e3e;">⚠️ 데이터를 불러오는데 실패했습니다.</p>
+                        <p style="margin-top: 8px; font-size: 12px; color: #718096;">${error.message}</p>
+                        <p style="margin-top: 12px; font-size: 12px; color: #718096;">
+                            Google Apps Script URL과 배포 상태를 확인해주세요.
+                        </p>
+                    </div>
+                `;
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        // 신청자 필터 업데이트
+        function updateNameFilter() {
+            const nameFilter = document.getElementById('nameFilter');
+            const names = [...new Set(allRequests.map(r => r.name))].sort();
+            
+            nameFilter.innerHTML = '<option value="전체">전체</option>';
+            names.forEach(name => {
+                nameFilter.innerHTML += `<option value="${name}">${name}</option>`;
+            });
+        }
+
+        // 연차 신청 목록 렌더링
+        function renderRequests() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const nameFilter = document.getElementById('nameFilter').value;
+            
+            let filteredRequests = allRequests;
+            
+            if (statusFilter !== '전체') {
+                filteredRequests = filteredRequests.filter(r => r.status === statusFilter);
+            }
+            
+            if (nameFilter !== '전체') {
+                filteredRequests = filteredRequests.filter(r => r.name === nameFilter);
+            }
+
+            const requestsList = document.getElementById('requestsList');
+            
+            if (filteredRequests.length === 0) {
+                requestsList.innerHTML = `
+                    <div class="empty-state">
+                        <p>📭</p>
+                        <p style="font-size: 16px; margin-top: 12px;">해당하는 신청 내역이 없습니다</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // 날짜 포맷팅 함수
+            function formatDate(dateStr) {
+                if (!dateStr) return '';
+                // ISO 날짜 형식이면 파싱
+                if (dateStr.includes('T') || dateStr.includes('Z')) {
+                    const date = new Date(dateStr);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                }
+                // 이미 포맷된 날짜면 그대로 반환
+                return dateStr.split(' ')[0]; // 시간 부분 제거
+            }
+
+            requestsList.innerHTML = filteredRequests.map(request => {
+                const statusClass = request.status === '대기' ? 'pending' : 
+                                  request.status === '승인' ? 'approved' : 'rejected';
+                
+                // 날짜 포맷팅
+                const startDate = formatDate(request.startDate);
+                const endDate = formatDate(request.endDate);
+                
+                return `
+                    <div class="request-card">
+                        <div class="request-header">
+                            <div>
+                                <div class="request-name">${request.name}</div>
+                                <div class="request-date">신청일시: ${request.submitDate}</div>
+                            </div>
+                            <span class="status-badge status-${statusClass}">${request.status}</span>
+                        </div>
+                        
+                        <div class="request-info">
+                            <div class="info-item">
+                                <span class="info-label">📂 유형:</span>
+                                <span class="info-value">${request.type}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">📅 종류:</span>
+                                <span class="info-value">${request.leaveType}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">🗓 기간:</span>
+                                <span class="info-value">${startDate} ~ ${endDate}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">⏱ 일수:</span>
+                                <span class="info-value">${request.days}일</span>
+                            </div>
+                        </div>
+                        
+                        <div class="request-reason">
+                            <strong>사유:</strong> ${request.reason}
+                        </div>
+                        
+                        ${request.status === '대기' ? `
+                            <div class="request-actions">
+                                <button class="action-btn approve-btn" onclick="updateStatus(${request.rowIndex}, '승인')">
+                                    ✅ 승인
+                                </button>
+                                <button class="action-btn reject-btn" onclick="updateStatus(${request.rowIndex}, '반려')">
+                                    ❌ 반려
+                                </button>
+                            </div>
+                        ` : request.processedDate ? `
+                            <div class="request-date" style="text-align: right; margin-top: 8px;">
+                                처리일시: ${request.processedDate} (${request.processor || '관리자'})
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 통계 업데이트
+        function updateStats() {
+            const pending = allRequests.filter(r => r.status === '대기').length;
+            const approved = allRequests.filter(r => r.status === '승인').length;
+            const rejected = allRequests.filter(r => r.status === '반려').length;
+            
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('rejectedCount').textContent = rejected;
+        }
+
+        // 상태 업데이트 (승인/반려)
+        async function updateStatus(rowIndex, status) {
+            if (!confirm(`정말 ${status}하시겠습니까?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({
+                        action: 'updateStatus',
+                        rowIndex: rowIndex,
+                        status: status
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`${status} 처리되었습니다.`);
+                    loadRequests();
+                } else {
+                    alert('처리 중 오류가 발생했습니다: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('처리 중 오류가 발생했습니다.');
+            }
+        }
+    </script>
+</body>
+</html>
