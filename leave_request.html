@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연차 신청 - HIQASC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3d4e5c 0%, #2c3e50 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .logo-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .hiqasc { color: #718096; }
+        .nespresso { color: #a0aec0; }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 12px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 12px;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .calendar-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        select, input[type="date"], textarea {
+            width: 100%;
+            padding: 7px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 12px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input[type="date"]:focus, textarea:focus {
+            outline: none;
+            border-color: #5dade2;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .info-box {
+            background: #ecf5fb;
+            border-left: 4px solid #5dade2;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: #2d3748;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #2980b9;
+            font-size: 12px;
+        }
+
+        .leave-balance {
+            padding: 12px;
+            background: #f0f9ff;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 15px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .leave-balance .balance-text {
+            color: #1e40af;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .leave-balance .balance-detail {
+            color: #475569;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(52, 73, 94, 0.4);
+            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+        }
+
+        .submit-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 달력 스타일 */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        .calendar-header h3 {
+            color: #2d3748;
+            font-size: 16px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: #5dade2;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #3498db;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: bold;
+            padding: 8px 4px;
+            font-size: 11px;
+            color: #64748b;
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 8px 4px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            min-height: 60px;
+            font-size: 11px;
+            background: white;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .calendar-day:hover {
+            background: #f8fafc;
+            border-color: #cbd5e0;
+        }
+
+        .calendar-day.other-month {
+            color: #cbd5e0;
+            background: #f8fafc;
+        }
+
+        .calendar-day.today {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            font-weight: bold;
+        }
+
+        .calendar-day.weekend {
+            background: #fef2f2;
+        }
+
+        .calendar-day-number {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1e293b;
+        }
+
+        .calendar-leaves {
+            font-size: 10px;
+            color: #059669;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .calendar-leaves div {
+            background: #d1fae5;
+            padding: 2px 4px;
+            margin: 2px 0;
+            border-radius: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .calendar-leaves div:hover {
+            background: #a7f3d0;
+        }
+
+        .calendar-tooltip {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-top: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+
+        .calendar-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-bottom-color: #1f2937;
+        }
+
+        .calendar-leaves div:hover .calendar-tooltip {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #5dade2;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: white;
+            opacity: 0.8;
+            font-size: 11px;
+            margin-top: 15px;
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+        }
+
+        .modal-header-error {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+        }
+
+        .modal-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .modal-body {
+            padding: 20px;
+            text-align: center;
+            color: #2d3748;
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        .modal-body strong {
+            display: block;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #4a5568;
+        }
+
+        .modal-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+
+        .modal-button:hover {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-section">
+                <span class="logo hiqasc">HIQASC</span>
+                <span class="logo nespresso">Nespresso</span>
+            </div>
+            <h1>🏖️ 연차 신청</h1>
+            <p class="subtitle">연차 및 휴가 신청</p>
+        </div>
+
+        <div class="main-content">
+            <!-- 신청 폼 -->
+            <div class="form-section">
+                <form id="leaveForm">
+                    <div class="info-box">
+                        <strong>📌 신청 안내</strong>
+                        연차는 최소 1일 전에 신청해주세요.<br>
+                        반차는 오전/오후 중 선택 가능합니다.
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">신청자 *</label>
+                        <select id="name" required>
+                            <option value="">선택하세요</option>
+                            <option value="강동구">강동구</option>
+                            <option value="곽연학">곽연학</option>
+                            <option value="김지수">김지수</option>
+                            <option value="김현관">김현관</option>
+                            <option value="박준현">박준현</option>
+                            <option value="신준호">신준호</option>
+                            <option value="안정용">안정용</option>
+                            <option value="이대민">이대민</option>
+                            <option value="이덕수">이덕수</option>
+                            <option value="이동민">이동민</option>
+                            <option value="이상민">이상민</option>
+                            <option value="장균수">장균수</option>
+                            <option value="조성주">조성주</option>
+                            <option value="최재웅">최재웅</option>
+                        </select>
+                    </div>
+
+                    <!-- 연차 잔액 표시 -->
+                    <div id="leaveBalance" style="display: none;" class="leave-balance">
+                        <div class="balance-text">
+                            잔여 연차: <span id="remainingLeave">0</span>일
+                        </div>
+                        <div class="balance-detail">
+                            총 <span id="totalLeave">0</span>일 / 사용 <span id="usedLeave">0</span>일
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type">신청 유형 *</label>
+                        <select id="type" required>
+                            <option value="">선택하세요</option>
+                            <option value="연차휴가">연차휴가</option>
+                            <option value="경조휴가">경조휴가</option>
+                            <option value="병가">병가</option>
+                            <option value="기타">기타</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="leaveType">연차 종류 *</label>
+                        <select id="leaveType" required>
+                            <option value="">선택하세요</option>
+                            <option value="연차(09:00~18:00)">연차 (종일, 09:00~18:00)</option>
+                            <option value="반차(오전/09:00~13:00)">반차 (오전, 09:00~13:00)</option>
+                            <option value="반차(오후/14:00~18:00)">반차 (오후, 14:00~18:00)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="startDate">시작일 *</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="endDate">종료일 *</label>
+                        <input type="date" id="endDate" required>
+                    </div>
+
+                    <!-- 일수 표시 -->
+                    <div id="daysDisplay" style="display: none; padding: 10px; background: #f0f9ff; border-radius: 6px; text-align: center; margin-bottom: 15px; border-left: 4px solid #3b82f6;">
+                        <span style="color: #1e40af; font-size: 14px; font-weight: bold;" id="daysText"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reason">신청 사유 *</label>
+                        <textarea id="reason" required placeholder="연차 사용 사유를 입력해주세요"></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">신청하기</button>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 15px; color: #667eea;">처리 중...</p>
+                </div>
+            </div>
+
+            <!-- 달력 -->
+            <div class="calendar-section">
+                <div class="calendar-header">
+                    <h3 id="currentMonth">2026년 1월</h3>
+                    <div class="calendar-nav">
+                        <button class="nav-btn" id="prevMonth">◀ 이전</button>
+                        <button class="nav-btn" id="nextMonth">다음 ▶</button>
+                    </div>
+                </div>
+
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- 달력이 여기에 생성됩니다 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            DEVELOPED BY DONGGU KANG © 2026 HIQASC
+        </div>
+    </div>
+
+    <!-- 성공 모달 -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">✅</div>
+                <h2 class="modal-title">신청 완료</h2>
+            </div>
+            <div class="modal-body">
+                <p id="successMessage"></p>
+                <button class="modal-button" onclick="closeModal()">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 에러 모달 -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header modal-header-error">
+                <div class="modal-icon">❌</div>
+                <h2 class="modal-title">신청 실패</h2>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage"></p>
+                <button class="modal-button" onclick="closeModal()">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzG8UQLph63cSwOZ6Z8aDg-TYgxh_cqTHCYRGowtSF9VlZDqxKiXkcXMGdNSyjnWv60/exec';
+        
+        const form = document.getElementById('leaveForm');
+        const nameSelect = document.getElementById('name');
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const leaveTypeSelect = document.getElementById('leaveType');
+
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth() + 1;
+
+        console.log('페이지 로드 완료, SCRIPT_URL:', SCRIPT_URL);
+
+        // 이름 선택 시 연차 정보 조회
+        nameSelect.addEventListener('change', async function() {
+            const name = this.value;
+            console.log('이름 선택됨:', name);
+            
+            if (!name) {
+                document.getElementById('leaveBalance').style.display = 'none';
+                return;
+            }
+
+            try {
+                console.log('연차 정보 조회 시작...');
+                const timestamp = new Date().getTime(); // 캐시 방지
+                const url = `${SCRIPT_URL}?action=getEmployeeInfo&name=${encodeURIComponent(name)}&_t=${timestamp}`;
+                console.log('요청 URL:', url);
+                
+                const response = await fetch(url, {
+                    cache: 'no-cache' // 캐시 사용 안 함
+                });
+                console.log('응답 받음:', response.status);
+                
+                const data = await response.json();
+                console.log('데이터:', data);
+
+                if (data.success) {
+                    document.getElementById('totalLeave').textContent = data.totalLeave;
+                    document.getElementById('usedLeave').textContent = data.usedLeave;
+                    document.getElementById('remainingLeave').textContent = data.remainingLeave;
+                    document.getElementById('leaveBalance').style.display = 'block';
+                    console.log('연차 정보 표시 완료!');
+                } else {
+                    console.error('직원 정보 조회 실패:', data.message);
+                    alert('직원 정보를 불러올 수 없습니다: ' + data.message);
+                }
+            } catch (error) {
+                console.error('연차 정보 조회 오류:', error);
+                alert('연차 정보 조회 중 오류가 발생했습니다: ' + error.message);
+            }
+        });
+
+        // 시작일 변경 시 종료일 자동 설정
+        startDateInput.addEventListener('change', function() {
+            if (!endDateInput.value) {
+                endDateInput.value = this.value;
+            }
+            calculateDays();
+        });
+
+        // 종료일 변경 시 일수 계산
+        endDateInput.addEventListener('change', function() {
+            calculateDays();
+        });
+
+        // 연차 종류 변경 시 일수 재계산
+        leaveTypeSelect.addEventListener('change', function() {
+            calculateDays();
+        });
+
+        // 일수 계산 함수
+        function calculateDays() {
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+            const leaveType = leaveTypeSelect.value;
+            
+            if (!startDate || !endDate || !leaveType) {
+                document.getElementById('daysDisplay').style.display = 'none';
+                return;
+            }
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            
+            let days = 0;
+            let displayText = '';
+
+            if (leaveType.includes('연차')) {
+                // 종일 연차: 날짜 차이 + 1
+                days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                displayText = `${startDate} ~ ${endDate} (${days}일간)`;
+            } else if (leaveType.includes('반차')) {
+                // 반차: 0.5일
+                days = 0.5;
+                const halfType = leaveType.includes('오전') ? '오전' : '오후';
+                displayText = `${startDate} ${halfType} (0.5일)`;
+            }
+
+            document.getElementById('daysText').textContent = displayText;
+            document.getElementById('daysDisplay').style.display = 'block';
+        }
+
+        // 달력 생성
+        function generateCalendar(year, month) {
+            const firstDay = new Date(year, month - 1, 1);
+            const lastDay = new Date(year, month, 0);
+            const prevLastDay = new Date(year, month - 1, 0);
+
+            const firstDayOfWeek = firstDay.getDay();
+            const lastDate = lastDay.getDate();
+            const prevLastDate = prevLastDay.getDate();
+
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+
+            // 요일 헤더
+            const dayHeaders = ['일', '월', '화', '수', '목', '금', '토'];
+            dayHeaders.forEach((day, index) => {
+                const header = document.createElement('div');
+                header.className = 'calendar-day-header';
+                header.textContent = day;
+                if (index === 0 || index === 6) {
+                    header.style.color = '#ef4444';
+                }
+                calendarGrid.appendChild(header);
+            });
+
+            // 이전 달 날짜
+            for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day other-month';
+                day.innerHTML = `<span class="calendar-day-number">${prevLastDate - i}</span>`;
+                calendarGrid.appendChild(day);
+            }
+
+            // 현재 달 날짜
+            const today = new Date();
+            for (let date = 1; date <= lastDate; date++) {
+                const day = document.createElement('div');
+                const currentDate = new Date(year, month - 1, date);
+                const dayOfWeek = currentDate.getDay();
+                
+                day.className = 'calendar-day';
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    day.classList.add('weekend');
+                }
+                if (today.getFullYear() === year && today.getMonth() + 1 === month && today.getDate() === date) {
+                    day.classList.add('today');
+                }
+
+                day.innerHTML = `<span class="calendar-day-number">${date}</span><div class="calendar-leaves" id="leaves-${year}-${month}-${date}"></div>`;
+                calendarGrid.appendChild(day);
+            }
+
+            // 다음 달 날짜
+            const remainingDays = 42 - (firstDayOfWeek + lastDate);
+            for (let date = 1; date <= remainingDays; date++) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day other-month';
+                day.innerHTML = `<span class="calendar-day-number">${date}</span>`;
+                calendarGrid.appendChild(day);
+            }
+
+            document.getElementById('currentMonth').textContent = `${year}년 ${month}월`;
+
+            // 연차 데이터 로드
+            loadCalendarData(year, month);
+        }
+
+        // 달력 데이터 로드
+        async function loadCalendarData(year, month) {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getCalendarData&year=${year}&month=${month}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    for (const [dateKey, leaves] of Object.entries(data.calendarData)) {
+                        const [y, m, d] = dateKey.split('-');
+                        const element = document.getElementById(`leaves-${y}-${parseInt(m)}-${parseInt(d)}`);
+                        if (element) {
+                            element.innerHTML = leaves.map(item => 
+                                `<div>
+                                    ${item.displayName}
+                                    <span class="calendar-tooltip">${item.tooltip}</span>
+                                </div>`
+                            ).join('');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('달력 데이터 로드 오류:', error);
+            }
+        }
+
+        // 이전/다음 달 버튼
+        document.getElementById('prevMonth').addEventListener('click', function() {
+            currentMonth--;
+            if (currentMonth < 1) {
+                currentMonth = 12;
+                currentYear--;
+            }
+            generateCalendar(currentYear, currentMonth);
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', function() {
+            currentMonth++;
+            if (currentMonth > 12) {
+                currentMonth = 1;
+                currentYear++;
+            }
+            generateCalendar(currentYear, currentMonth);
+        });
+
+        // 폼 제출
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('폼 제출 시작...');
+
+            const name = nameSelect.value;
+            const type = document.getElementById('type').value;
+            const leaveType = leaveTypeSelect.value;
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+            const reason = document.getElementById('reason').value;
+
+            console.log('신청 정보:', {name, type, leaveType, startDate, endDate});
+
+            // 사용 일수 계산
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            let days = 0;
+
+            if (leaveType.includes('연차')) {
+                days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+            } else if (leaveType.includes('반차')) {
+                days = 0.5;
+            }
+
+            console.log('사용 일수:', days);
+
+            // 잔여 연차 체크
+            const remainingLeave = parseFloat(document.getElementById('remainingLeave').textContent);
+            console.log('잔여 연차:', remainingLeave);
+            
+            if (days > remainingLeave) {
+                showError('잔여 연차가 부족합니다.');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                console.log('신청 전송 시작...');
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({
+                        action: 'submitRequest',
+                        name: name,
+                        type: type,
+                        leaveType: leaveType,
+                        startDate: startDate,
+                        endDate: endDate,
+                        days: days,
+                        reason: reason
+                    })
+                });
+
+                console.log('응답 받음:', response.status);
+                const data = await response.json();
+                console.log('응답 데이터:', data);
+
+                if (data.success) {
+                    showSuccess(`${name}님의 연차 신청이 완료되었습니다.<br><br>
+                        <strong>신청 내용</strong><br>
+                        ${type} - ${leaveType}<br>
+                        ${startDate} ~ ${endDate} (${days}일)<br>
+                        사유: ${reason}`);
+                    form.reset();
+                    document.getElementById('leaveBalance').style.display = 'none';
+                } else {
+                    showError(data.message || '신청 중 오류가 발생했습니다.');
+                }
+            } catch (error) {
+                console.error('신청 오류:', error);
+                showError('신청 중 오류가 발생했습니다: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+
+        // 모달 함수
+        function showSuccess(message) {
+            document.getElementById('successMessage').innerHTML = message;
+            document.getElementById('successModal').style.display = 'block';
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').innerHTML = message;
+            document.getElementById('errorModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').style.display = 'none';
+            document.getElementById('errorModal').style.display = 'none';
+            location.reload();
+        }
+
+        window.onclick = function(event) {
+            const successModal = document.getElementById('successModal');
+            const errorModal = document.getElementById('errorModal');
+            if (event.target == successModal) {
+                closeModal();
+            }
+            if (event.target == errorModal) {
+                closeModal();
+            }
+        }
+
+        // 페이지 로드 시 달력 생성
+        console.log('달력 생성 시작...');
+        generateCalendar(currentYear, currentMonth);
+        console.log('초기화 완료!');
+    </script>
+</body>
+</html>
