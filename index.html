@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연차 및 추가근로 관리 시스템</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+            background: #1e1e1e;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 헤더 */
+        .header {
+            background: #2a2a2a;
+            border-bottom: 1px solid #3a3a3a;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #808080;
+            font-size: 0.95em;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #4a90e2;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #357abd;
+        }
+
+        /* 메인 컨텐츠 */
+        .main-container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 30px;
+            width: 100%;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            color: #ffffff;
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* 카드 그리드 */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4a90e2 0%, #357abd 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #4a90e2;
+            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.15);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            color: #ffffff;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .card-description {
+            color: #909090;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: #ffffff;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .card-button:hover {
+            transform: translateX(3px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: #2a2a2a;
+            border-top: 1px solid #3a3a3a;
+            padding: 25px;
+            text-align: center;
+            color: #606060;
+            font-size: 0.9em;
+        }
+
+        .developer-tag {
+            margin-top: 10px;
+            font-weight: 600;
+            color: #4a90e2;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.4em;
+            }
+
+            .section-title {
+                font-size: 1.2em;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <div class="header">
+        <div class="header-container">
+            <h1>연차 및 추가근로 관리 시스템</h1>
+            <p>HIQASC 수리팀 근태 관리 플랫폼</p>
+            <a href="https://donggukang09.github.io/hiqasc-platform/" class="back-link">← 메인 시스템으로 돌아가기</a>
+        </div>
+    </div>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="main-container">
+        <!-- 연차 관리 섹션 -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="section-icon">V</span>
+                연차 관리
+            </h2>
+            <div class="cards-grid">
+                <div class="card" onclick="window.location.href='leave_request.html'">
+                    <h3 class="card-title">연차 신청</h3>
+                    <p class="card-description">
+                        연차 및 휴가를 신청할 수 있습니다.
+                        신청 후 팀장 승인을 대기합니다.
+                    </p>
+                    <a href="leave_request.html" class="card-button">신청하기 →</a>
+                </div>
+
+                <div class="card" onclick="window.location.href='leave_approval.html'">
+                    <h3 class="card-title">연차 승인</h3>
+                    <p class="card-description">
+                        팀원들의 연차 신청 내역을 확인하고
+                        승인 또는 반려 처리를 진행합니다.
+                    </p>
+                    <a href="leave_approval.html" class="card-button">승인 관리 →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 추가근로 관리 섹션 -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="section-icon">OT</span>
+                추가근로 관리
+            </h2>
+            <div class="cards-grid">
+                <div class="card" onclick="window.location.href='overtime_request.html'">
+                    <h3 class="card-title">추가근로 신청</h3>
+                    <p class="card-description">
+                        초과근무 및 추가근로를 신청할 수 있습니다.
+                        일일 목표 20대를 고려하여 신청하세요.
+                    </p>
+                    <a href="overtime_request.html" class="card-button">신청하기 →</a>
+                </div>
+
+                <div class="card" onclick="window.location.href='overtime_approval.html'">
+                    <h3 class="card-title">추가근로 승인</h3>
+                    <p class="card-description">
+                        팀원들의 추가근로 신청 내역을 확인하고
+                        승인 또는 반려 처리를 진행합니다.
+                    </p>
+                    <a href="overtime_approval.html" class="card-button">승인 관리 →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>© 2025 HIQASC Leave & Overtime Management System</p>
+        <p class="developer-tag">DEVELOPED BY DONGGU KANG</p>
+    </div>
+
+    <script>
+        // 개발자 콘솔 메시지
+        console.log('%c🚀 HIQASC 연차 및 추가근로 관리 시스템', 'font-size: 18px; font-weight: bold; color: #4a90e2;');
+        console.log('%cDeveloped by Donggu Kang', 'font-size: 14px; color: #357abd;');
+    </script>
+</body>
+</html>
