@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소모품 신청 | HIQASC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+            background: #2a2a2a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .top-header {
+            background: #1e1e1e;
+            border-bottom: 1px solid #3a3a3a;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .top-header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .header-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .header-info h1 {
+            font-size: 1.5em;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .header-info p {
+            color: #808080;
+            font-size: 0.9em;
+        }
+
+        .back-link {
+            color: #4a90e2;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #4a90e2;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 0.9em;
+        }
+
+        .back-link:hover {
+            background: #4a90e2;
+            color: #ffffff;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            border: 4px solid #3a3a3a;
+            border-top: 4px solid #4a90e2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #808080;
+            font-size: 1.1em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .form-section {
+            background: #353535;
+            border: 1px solid #4a4a4a;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-title {
+            font-size: 1.5em;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            color: #b0b0b0;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .form-label.required::after {
+            content: ' *';
+            color: #e74c3c;
+        }
+
+        .form-input,
+        .form-select {
+            padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid #4a4a4a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .form-select {
+            cursor: pointer;
+        }
+
+        .other-input {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .other-input.active {
+            display: block;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .history-section {
+            background: #353535;
+            border: 1px solid #4a4a4a;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .history-title {
+            font-size: 1.5em;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .request-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .request-table th {
+            background: #2a2a2a;
+            color: #b0b0b0;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9em;
+            border-bottom: 2px solid #4a4a4a;
+        }
+
+        .request-table td {
+            padding: 12px;
+            border-bottom: 1px solid #3a3a3a;
+            color: #e0e0e0;
+        }
+
+        .request-table tr:hover {
+            background: #2a2a2a;
+        }
+
+        .status-select {
+            padding: 6px 10px;
+            background: #2a2a2a;
+            border: 1px solid #4a4a4a;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 0.85em;
+            cursor: pointer;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.active {
+            display: block;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+            color: #28a745;
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: scroll;
+            }
+        }
+    </style>
+    <script>
+        // 캐시 버스터: config.js를 항상 최신 버전으로 로드
+        (function() {
+            const script = document.createElement('script');
+            script.src = 'config.js?v=' + Date.now();
+            document.head.appendChild(script);
+        })();
+    </script>
+</head>
+<body>
+    <div class="top-header">
+        <div class="top-header-container">
+            <div class="header-left">
+                <div class="header-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/>
+                    </svg>
+                </div>
+                <div class="header-info">
+                    <h1>소모품 신청</h1>
+                    <p>필요한 소모품을 신청하세요</p>
+                </div>
+            </div>
+            <a href="https://donggukang09.github.io/hiqasc-platform/" class="back-link">← 메인으로</a>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">데이터 로딩 중...</div>
+    </div>
+
+    <div class="container" id="mainContainer" style="display: none;">
+        <div class="alert alert-success" id="successAlert">
+            ✓ 신청이 완료되었습니다!
+        </div>
+        <div class="alert alert-error" id="errorAlert">
+            ✗ 오류가 발생했습니다. 다시 시도해주세요.
+        </div>
+
+        <div class="form-section">
+            <h2 class="form-title">
+                <span>📝</span>
+                <span>소모품 신청하기</span>
+            </h2>
+            
+            <form id="requestForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label required">품목</label>
+                        <select class="form-select" id="itemSelect" required>
+                            <option value="">선택하세요</option>
+                        </select>
+                        <input type="text" class="form-input other-input" id="itemOther" placeholder="품목을 입력하세요">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">규격</label>
+                        <select class="form-select" id="specSelect" required>
+                            <option value="">선택하세요</option>
+                        </select>
+                        <input type="text" class="form-input other-input" id="specOther" placeholder="규격을 입력하세요">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">수량</label>
+                        <input type="number" class="form-input" id="quantity" min="1" placeholder="수량을 입력하세요" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">단위</label>
+                        <select class="form-select" id="unitSelect" required>
+                            <option value="">선택하세요</option>
+                        </select>
+                        <input type="text" class="form-input other-input" id="unitOther" placeholder="단위를 입력하세요">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label required">신청자</label>
+                        <input type="text" class="form-input" id="requester" placeholder="이름을 입력하세요" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">신청하기</button>
+            </form>
+        </div>
+
+        <div class="history-section">
+            <h2 class="history-title">
+                <span>📋</span>
+                <span>신청 내역</span>
+            </h2>
+
+            <div class="table-container">
+                <table class="request-table">
+                    <thead>
+                        <tr>
+                            <th>신청일시</th>
+                            <th>품목</th>
+                            <th>규격</th>
+                            <th>수량</th>
+                            <th>단위</th>
+                            <th>신청자</th>
+                            <th>상태</th>
+                            <th>완료일시</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SHEET_ID = SHEETS_CONFIG.supplies;
+        const ITEMS_SHEET = '소모품품목리스트';
+        const REQUESTS_SHEET = '소모품신청내역';
+        const WEB_APP_URL = APPS_SCRIPT_CONFIG.suppliesRequest;
+
+        let itemsData = [];
+        let requestsData = [];
+
+        async function loadData() {
+            try {
+                const itemsUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${ITEMS_SHEET}`;
+                const requestsUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${REQUESTS_SHEET}`;
+
+                console.log('시트 ID:', SHEET_ID);
+                console.log('품목 시트명:', ITEMS_SHEET);
+                console.log('신청 시트명:', REQUESTS_SHEET);
+
+                const [itemsResponse, requestsResponse] = await Promise.all([
+                    fetch(itemsUrl),
+                    fetch(requestsUrl)
+                ]);
+
+                const itemsText = await itemsResponse.text();
+                const requestsText = await requestsResponse.text();
+
+                console.log('신청 데이터 원본 (처음 200자):', requestsText.substring(0, 200));
+
+                itemsData = parseGoogleSheetsData(itemsText, false);
+                requestsData = parseGoogleSheetsData(requestsText, true); // true로 변경!
+
+                console.log('품목 데이터:', itemsData.length, '개');
+                console.log('신청 데이터:', requestsData.length, '개');
+                console.log('신청 내역:', requestsData);
+
+                populateDropdowns();
+                displayRequests();
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+            } catch (error) {
+                console.error('데이터 로드 오류:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div style="color: #e74c3c;">
+                        <h3>데이터 로드 실패</h3>
+                        <p>Google Sheets에 접근할 수 없습니다.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function parseGoogleSheetsData(text, isRequestsSheet = false) {
+            const json = JSON.parse(text.substring(47).slice(0, -2));
+            const rows = json.table.rows;
+            
+            let headers;
+            let dataStartRow;
+            
+            if (isRequestsSheet) {
+                // 소모품신청내역 시트는 헤더를 강제 지정
+                headers = ['신청일시', '품목', '규격', '수량', '단위', '신청자', '상태', '완료일시'];
+                dataStartRow = 1; // 2행부터 데이터 (1행은 헤더)
+                console.log('신청내역 시트 - 강제 헤더 사용:', headers);
+            } else {
+                // 품목리스트는 첫 행을 헤더로 사용
+                headers = rows[0].c.map(cell => cell ? cell.v : null);
+                dataStartRow = 1;
+                console.log('품목리스트 - 파싱된 헤더:', headers);
+            }
+            
+            return rows.slice(dataStartRow).map((row, index) => {
+                const obj = {};
+                row.c.forEach((cell, idx) => {
+                    const header = headers[idx];
+                    if (header) {
+                        obj[header] = cell ? cell.v : null;
+                    }
+                });
+                obj['_rowIndex'] = index + dataStartRow + 1;
+                return obj;
+            }).filter(row => {
+                const values = Object.entries(row)
+                    .filter(([key, val]) => key !== '_rowIndex')
+                    .map(([key, val]) => val);
+                return values.some(v => v !== null && v !== undefined && v !== '');
+            });
+        }
+
+        function populateDropdowns() {
+            const itemSelect = document.getElementById('itemSelect');
+            const specSelect = document.getElementById('specSelect');
+            const unitSelect = document.getElementById('unitSelect');
+
+            const items = [...new Set(
+                itemsData
+                    .map(row => row['품목명'])
+                    .filter(v => v && v !== '품목명')
+            )];
+            
+            items.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item;
+                option.textContent = item;
+                itemSelect.appendChild(option);
+            });
+            
+            const otherOption = document.createElement('option');
+            otherOption.value = '기타';
+            otherOption.textContent = '기타';
+            itemSelect.appendChild(otherOption);
+
+            const specs = [...new Set(
+                itemsData
+                    .map(row => row['규격'])
+                    .filter(v => v && v !== '규격')
+            )];
+            
+            specs.forEach(spec => {
+                const option = document.createElement('option');
+                option.value = spec;
+                option.textContent = spec;
+                specSelect.appendChild(option);
+            });
+            
+            const specOther = document.createElement('option');
+            specOther.value = '기타';
+            specOther.textContent = '기타';
+            specSelect.appendChild(specOther);
+
+            const units = [...new Set(
+                itemsData
+                    .map(row => row['단위'])
+                    .filter(v => v && v !== '단위')
+            )];
+            
+            units.forEach(unit => {
+                const option = document.createElement('option');
+                option.value = unit;
+                option.textContent = unit;
+                unitSelect.appendChild(option);
+            });
+            
+            const unitOther = document.createElement('option');
+            unitOther.value = '기타';
+            unitOther.textContent = '기타';
+            unitSelect.appendChild(unitOther);
+        }
+
+        document.getElementById('itemSelect').addEventListener('change', function() {
+            const otherInput = document.getElementById('itemOther');
+            if (this.value === '기타') {
+                otherInput.classList.add('active');
+                otherInput.required = true;
+            } else {
+                otherInput.classList.remove('active');
+                otherInput.required = false;
+                otherInput.value = '';
+            }
+        });
+
+        document.getElementById('specSelect').addEventListener('change', function() {
+            const otherInput = document.getElementById('specOther');
+            if (this.value === '기타') {
+                otherInput.classList.add('active');
+                otherInput.required = true;
+            } else {
+                otherInput.classList.remove('active');
+                otherInput.required = false;
+                otherInput.value = '';
+            }
+        });
+
+        document.getElementById('unitSelect').addEventListener('change', function() {
+            const otherInput = document.getElementById('unitOther');
+            if (this.value === '기타') {
+                otherInput.classList.add('active');
+                otherInput.required = true;
+            } else {
+                otherInput.classList.remove('active');
+                otherInput.required = false;
+                otherInput.value = '';
+            }
+        });
+
+        document.getElementById('requestForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.querySelector('.btn-submit');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '신청 중...';
+
+            const itemSelect = document.getElementById('itemSelect').value;
+            const specSelect = document.getElementById('specSelect').value;
+            const unitSelect = document.getElementById('unitSelect').value;
+
+            const item = itemSelect === '기타' ? document.getElementById('itemOther').value : itemSelect;
+            const spec = specSelect === '기타' ? document.getElementById('specOther').value : specSelect;
+            const quantity = document.getElementById('quantity').value;
+            const unit = unitSelect === '기타' ? document.getElementById('unitOther').value : unitSelect;
+            const requester = document.getElementById('requester').value;
+
+            const now = new Date();
+            const timestamp = now.toLocaleString('ko-KR');
+
+            const params = new URLSearchParams({
+                '신청일시': timestamp,
+                '품목': item,
+                '규격': spec,
+                '수량': quantity,
+                '단위': unit,
+                '신청자': requester,
+                '상태': '요청중',
+                '완료일시': ''
+            });
+
+            try {
+                await fetch(`${WEB_APP_URL}?${params.toString()}`, {
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+
+                requestsData.push({
+                    '신청일시': timestamp,
+                    '품목': item,
+                    '규격': spec,
+                    '수량': quantity,
+                    '단위': unit,
+                    '신청자': requester,
+                    '상태': '요청중',
+                    '완료일시': '',
+                    '_rowIndex': requestsData.length + 2
+                });
+
+                showAlert('success');
+                displayRequests();
+                this.reset();
+
+                document.querySelectorAll('.other-input').forEach(input => {
+                    input.classList.remove('active');
+                    input.required = false;
+                });
+
+            } catch (error) {
+                console.error('신청 오류:', error);
+                showAlert('error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '신청하기';
+            }
+        });
+
+        function displayRequests() {
+            const tbody = document.getElementById('requestTableBody');
+            tbody.innerHTML = '';
+
+            let displayData = [...requestsData];
+            displayData.reverse();
+
+            displayData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                
+                const realIndex = requestsData.length - 1 - index;
+                const rowIndex = row['_rowIndex'];
+
+                tr.innerHTML = `
+                    <td>${row['신청일시'] || '-'}</td>
+                    <td>${row['품목'] || '-'}</td>
+                    <td>${row['규격'] || '-'}</td>
+                    <td>${row['수량'] || '-'}</td>
+                    <td>${row['단위'] || '-'}</td>
+                    <td>${row['신청자'] || '-'}</td>
+                    <td>
+                        <select class="status-select" onchange="updateStatus(${realIndex}, ${rowIndex}, this.value)">
+                            <option value="요청중" ${row['상태'] === '요청중' ? 'selected' : ''}>요청중</option>
+                            <option value="구매대기중" ${row['상태'] === '구매대기중' ? 'selected' : ''}>구매대기중</option>
+                            <option value="완료" ${row['상태'] === '완료' ? 'selected' : ''}>완료</option>
+                        </select>
+                    </td>
+                    <td>${row['완료일시'] || '-'}</td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+
+            if (displayData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #808080;">신청 내역이 없습니다.</td></tr>';
+            }
+        }
+
+        async function updateStatus(arrayIndex, rowIndex, newStatus) {
+            try {
+                // 로컬 데이터 업데이트
+                requestsData[arrayIndex]['상태'] = newStatus;
+                
+                let completedTime = '';
+                if (newStatus === '완료') {
+                    const now = new Date();
+                    completedTime = now.toLocaleString('ko-KR');
+                    requestsData[arrayIndex]['완료일시'] = completedTime;
+                } else {
+                    requestsData[arrayIndex]['완료일시'] = '';
+                }
+
+                // 화면 즉시 업데이트
+                displayRequests();
+
+                // Apps Script로 실제 시트 업데이트
+                const params = new URLSearchParams({
+                    action: 'updateStatus',
+                    rowIndex: rowIndex,
+                    status: newStatus,
+                    completedTime: completedTime
+                });
+
+                await fetch(`${WEB_APP_URL}?${params.toString()}`, {
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+
+                console.log('상태 업데이트 완료:', rowIndex, newStatus);
+
+            } catch (error) {
+                console.error('상태 업데이트 오류:', error);
+                showAlert('error');
+            }
+        }
+
+        function showAlert(type) {
+            const alert = document.getElementById(type === 'success' ? 'successAlert' : 'errorAlert');
+            alert.classList.add('active');
+            
+            setTimeout(() => {
+                alert.classList.remove('active');
+            }, 3000);
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
