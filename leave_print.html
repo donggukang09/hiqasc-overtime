@@ -195,29 +195,17 @@
 
         .bottom-info {
             margin-top: 70px;
-            width: 260px;
-            margin-left: auto;
-            margin-right: 30px;
+            position: relative;
+            padding-left: 200px;
+            line-height: 2.2;
         }
-        .bottom-info table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .bottom-info table td {
-            padding: 4px 0;
+        .bottom-line {
+            position: relative;
             font-size: 12pt;
-            vertical-align: middle;
         }
-        .bottom-info .label-col {
-            white-space: nowrap;
-            text-align: left;
-        }
-        .bottom-info .value-col {
-            text-align: left;
-        }
-        .bottom-info .seal-col {
-            text-align: right;
-            width: 40px;
+        .bottom-line .end-text {
+            position: absolute;
+            right: 30px;
         }
 
         /* ===== 푸터 ===== */
@@ -309,16 +297,8 @@
         <p class="submit-date"><span id="formSubmitYear">-</span> 년 &nbsp;<span id="formSubmitMonth">-</span>월 <span id="formSubmitDay">-</span> 일</p>
 
         <div class="bottom-info">
-            <table>
-                <tr>
-                    <td class="label-col">부 서 명 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</td>
-                    <td class="value-col" style="text-align:right;">네스프레소 사업부</td>
-                </tr>
-                <tr>
-                    <td class="label-col">신청자 성 &nbsp;명 :</td>
-                    <td class="value-col" style="text-align:right;"><span id="formName">-</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(인)</td>
-                </tr>
-            </table>
+            <p class="bottom-line">부 서 명 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 네스프레소 사업부</p>
+            <p class="bottom-line">신청자 성 &nbsp;명 : <span id="formName">-</span><span class="end-text">(인)</span></p>
         </div>
     </div>
 
