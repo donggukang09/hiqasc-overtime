@@ -164,7 +164,7 @@
 
         /* ===== 본문 ===== */
         .body-content {
-            margin-top: 16px;
+            margin-top: -10px;
             line-height: 2.4;
             font-size: 12pt;
         }
@@ -193,14 +193,31 @@
             margin-top: 80px;
         }
 
-        .dept-info {
+        .bottom-info {
             margin-top: 70px;
-            padding-left: 180px;
+            width: 340px;
+            margin-left: auto;
+            margin-right: 30px;
         }
-        .name-info {
+        .bottom-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .bottom-info table td {
+            padding: 4px 0;
+            font-size: 12pt;
+            vertical-align: middle;
+        }
+        .bottom-info .label-col {
+            white-space: nowrap;
+            text-align: left;
+        }
+        .bottom-info .value-col {
+            text-align: left;
+        }
+        .bottom-info .seal-col {
             text-align: right;
-            padding-right: 30px;
-            margin-top: 10px;
+            width: 40px;
         }
 
         /* ===== 푸터 ===== */
@@ -291,9 +308,20 @@
 
         <p class="submit-date"><span id="formSubmitYear">-</span> 년 &nbsp;<span id="formSubmitMonth">-</span>월 <span id="formSubmitDay">-</span> 일</p>
 
-        <p class="dept-info">부 서 명 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 네스프레소 사업부</p>
-
-        <p class="name-info">신청자 성 &nbsp;명 : <span id="formName">-</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(인)</p>
+        <div class="bottom-info">
+            <table>
+                <tr>
+                    <td class="label-col">부 서 명 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</td>
+                    <td class="value-col">네스프레소 사업부</td>
+                    <td class="seal-col"></td>
+                </tr>
+                <tr>
+                    <td class="label-col">신청자 성 &nbsp;명 :</td>
+                    <td class="value-col"><span id="formName">-</span></td>
+                    <td class="seal-col">(인)</td>
+                </tr>
+            </table>
+        </div>
     </div>
 
     <!-- 푸터 -->
