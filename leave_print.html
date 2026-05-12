@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연차 휴가 신청서 출력</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: '굴림', Gulim, sans-serif;
+            background: #f0f0f0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .print-controls {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #2c3e50;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .print-controls .info {
+            font-size: 14px;
+        }
+
+        .print-controls .info strong {
+            color: #5dade2;
+        }
+
+        .print-btn {
+            background: #5dade2;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .print-btn:hover {
+            background: #3498db;
+        }
+
+        @media print {
+            .print-controls { display: none !important; }
+            body { background: white; }
+            .page { 
+                margin: 0 !important; 
+                box-shadow: none !important;
+                border: none !important;
+            }
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 60px auto 20px;
+            background: white;
+            padding: 18mm 20mm 18mm 20mm;
+            position: relative;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+        }
+
+        /* ===== 헤더 테이블 (로고 + 제목 + 문서정보) ===== */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #000;
+            table-layout: fixed;
+        }
+
+        .header-table td {
+            border: 1px solid #000;
+            padding: 2px 6px;
+            font-size: 10pt;
+            vertical-align: middle;
+        }
+
+        .header-logo-cell {
+            width: 22%;
+            text-align: center;
+            border-right: 1px solid #000;
+            padding: 8px !important;
+        }
+
+        .header-logo-cell img {
+            height: 28px;
+        }
+
+        .header-title-cell {
+            width: 46%;
+            text-align: center;
+            padding: 6px !important;
+        }
+
+        .header-title-cell .type-label {
+            font-size: 14pt;
+            font-weight: bold;
+        }
+
+        .header-title-cell .main-title {
+            font-size: 17pt;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .header-info-cell {
+            width: 32%;
+            padding: 0 !important;
+            border-left: 1px solid #000;
+        }
+
+        .header-info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .header-info-table td {
+            border: none;
+            border-bottom: 1px solid #000;
+            padding: 2px 8px;
+            font-size: 9pt;
+        }
+
+        .header-info-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .header-info-table .label {
+            width: 50%;
+            text-align: center;
+            background: #f0f0f0;
+            border-right: 1px solid #000;
+        }
+
+        .header-info-table .value {
+            width: 50%;
+            text-align: center;
+        }
+
+        /* ===== 결재란 ===== */
+        .approval-table {
+            width: 240px;
+            border-collapse: collapse;
+            border: 2px solid #000;
+            float: right;
+            margin-top: 12px;
+            table-layout: fixed;
+        }
+
+        .approval-table td {
+            border: 1px solid #000;
+            text-align: center;
+            font-size: 9pt;
+            vertical-align: middle;
+        }
+
+        .approval-table .dept-cell {
+            width: 28px;
+            background: #f0f0f0;
+            writing-mode: vertical-lr;
+            letter-spacing: 4px;
+            font-size: 9pt;
+            padding: 4px 2px;
+        }
+
+        .approval-table .title-row td {
+            background: #f0f0f0;
+            height: 18px;
+            padding: 1px;
+        }
+
+        .approval-table .sign-row td {
+            height: 52px;
+            padding: 2px;
+        }
+
+        .approval-table .stamp-row td {
+            height: 18px;
+            padding: 1px;
+            font-size: 8pt;
+            color: #666;
+        }
+
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* ===== 본문 ===== */
+        .body-content {
+            margin-top: 24px;
+            clear: both;
+            font-size: 12pt;
+            line-height: 2.2;
+        }
+
+        .body-content .field-line {
+            margin-bottom: 0;
+        }
+
+        .body-content .indent-line {
+            padding-left: 160px;
+        }
+
+        .body-content .indent-line2 {
+            padding-left: 60px;
+        }
+
+        .body-content .empty-line {
+            height: 26px;
+        }
+
+        .body-content .center-text {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .body-content .date-line {
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .body-content .dept-line {
+            text-align: left;
+            padding-left: 220px;
+            margin-top: 50px;
+        }
+
+        .body-content .name-line {
+            text-align: right;
+            padding-right: 20px;
+            margin-top: 6px;
+        }
+
+        /* ===== 푸터 ===== */
+        .footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 20mm;
+            right: 20mm;
+            border-top: 1px solid #000;
+            padding-top: 8px;
+            text-align: center;
+            font-size: 10pt;
+        }
+
+        .footer strong {
+            font-size: 10pt;
+        }
+
+        /* ===== 에러/로딩 ===== */
+        .error-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .error-container p {
+            font-size: 16px;
+            color: #e74c3c;
+        }
+
+        .error-container .sub {
+            font-size: 13px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="print-controls" id="printControls">
+    <div class="info">
+        📄 <strong id="printName"></strong>님의 연차 휴가 신청서
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨️ 인쇄하기</button>
+</div>
+
+<div class="page" id="formPage">
+
+    <!-- 헤더: 로고 + 제목 + 문서정보 -->
+    <table class="header-table">
+        <tr>
+            <td class="header-logo-cell" rowspan="4">
+                <img src="data:image/jpeg;base64,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" alt="HiQsys">
+            </td>
+            <td class="header-title-cell" rowspan="4">
+                <div class="type-label">(<span id="formType">연차</span>)</div>
+                <div class="main-title">유급 휴가 신청서</div>
+            </td>
+            <td style="width:16%; text-align:center; background:#f0f0f0; border-right:1px solid #000; font-size:9pt;">문서번호</td>
+            <td style="width:16%; text-align:center; font-size:9pt;"></td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background:#f0f0f0; border-right:1px solid #000; font-size:9pt;">페이지번호</td>
+            <td style="text-align:center; font-size:9pt;">1/1 페이지</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background:#f0f0f0; border-right:1px solid #000; font-size:9pt;">작 성 자</td>
+            <td style="text-align:center; font-size:9pt;" id="headerAuthor">-</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background:#f0f0f0; border-right:1px solid #000; font-size:9pt;">작성일자</td>
+            <td style="text-align:center; font-size:9pt;" id="headerDate">-</td>
+        </tr>
+    </table>
+
+    <!-- 결재란 -->
+    <div class="clearfix">
+        <table class="approval-table">
+            <tr class="title-row">
+                <td class="dept-cell" rowspan="3">소속부서</td>
+                <td style="width:53px;">담 당</td>
+                <td style="width:53px;">상 무</td>
+                <td style="width:53px;">부사장</td>
+                <td style="width:53px;">대표 이사</td>
+            </tr>
+            <tr class="sign-row">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="stamp-row">
+                <td>/</td>
+                <td></td>
+                <td>/</td>
+                <td>/</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 본문 -->
+    <div class="body-content">
+        <p class="field-line">１. 사 &nbsp;&nbsp; 유 :&nbsp; <span id="formReason">-</span></p>
+
+        <p class="empty-line"></p>
+        <p class="empty-line"></p>
+
+        <p class="field-line">２. 기 &nbsp;&nbsp; 간 : <span id="formStartYear">-</span> 년 <span id="formStartMonth">-</span> 월 <span id="formStartDay">-</span> 일부터</p>
+
+        <p class="indent-line">(<span id="formDays">-</span> 일간)</p>
+
+        <p class="indent-line2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="formEndYear">-</span> 년 <span id="formEndMonth">-</span> 월 <span id="formEndDay">-</span> 일까지</p>
+
+        <p class="empty-line"></p>
+        <p class="empty-line"></p>
+        <p class="empty-line"></p>
+        <p class="empty-line"></p>
+
+        <p class="center-text">본인이 적치한 연차 유급 휴가일 중에 위와 같이 연차 휴가를 사용하고자 신청합니다.</p>
+
+        <p class="date-line"><span id="formSubmitYear">-</span> 년 &nbsp;<span id="formSubmitMonth">-</span>월 <span id="formSubmitDay">-</span> 일</p>
+
+        <p class="dept-line">부 서 명 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 네스프레소 사업부</p>
+
+        <p class="name-line">신청자 성 &nbsp;명 : <span id="formName">-</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(인)</p>
+    </div>
+
+    <!-- 푸터 -->
+    <div class="footer">
+        <strong>㈜하이큐시스템</strong>/경기 성남 분당구 판교로 697 (분당테크노파크 A-703호,508호)
+    </div>
+
+</div>
+
+<script>
+    function getParam(name) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(name) || '';
+    }
+
+    function parseDate(dateStr) {
+        if (!dateStr) return { year: '', month: '', day: '' };
+        // "2026-04-10" 형식
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+            return {
+                year: parts[0],
+                month: String(parseInt(parts[1])),
+                day: String(parseInt(parts[2]))
+            };
+        }
+        return { year: '', month: '', day: '' };
+    }
+
+    function formatHeaderDate(dateStr) {
+        const d = parseDate(dateStr);
+        if (!d.year) return '-';
+        return `${d.year}. ${d.month.padStart(2, '0')}.${d.day.padStart(2, '0')}.`;
+    }
+
+    function init() {
+        const name = getParam('name');
+        const type = getParam('type') || '연차';
+        const leaveType = getParam('leaveType') || '';
+        const startDate = getParam('startDate');
+        const endDate = getParam('endDate');
+        const days = getParam('days');
+        const reason = getParam('reason');
+        const submitDate = getParam('submitDate');
+
+        if (!name || !startDate) {
+            document.getElementById('formPage').innerHTML = `
+                <div class="error-container">
+                    <p>⚠️ 신청서 데이터가 없습니다.</p>
+                    <p class="sub">승인 메일의 링크를 통해 접속해주세요.</p>
+                </div>
+            `;
+            document.getElementById('printControls').style.display = 'none';
+            return;
+        }
+
+        // 상단 컨트롤
+        document.getElementById('printName').textContent = name;
+
+        // 헤더 정보
+        document.getElementById('formType').textContent = type;
+        document.getElementById('headerAuthor').textContent = name;
+        document.getElementById('headerDate').textContent = formatHeaderDate(submitDate);
+
+        // 사유
+        document.getElementById('formReason').textContent = reason;
+
+        // 기간 - 시작일
+        const start = parseDate(startDate);
+        document.getElementById('formStartYear').textContent = start.year;
+        document.getElementById('formStartMonth').textContent = start.month;
+        document.getElementById('formStartDay').textContent = start.day;
+
+        // 기간 - 종료일
+        const end = parseDate(endDate);
+        document.getElementById('formEndYear').textContent = end.year;
+        document.getElementById('formEndMonth').textContent = end.month;
+        document.getElementById('formEndDay').textContent = end.day;
+
+        // 일수
+        document.getElementById('formDays').textContent = days;
+
+        // 신청일 (하단 날짜)
+        const submit = parseDate(submitDate);
+        document.getElementById('formSubmitYear').textContent = submit.year;
+        document.getElementById('formSubmitMonth').textContent = submit.month;
+        document.getElementById('formSubmitDay').textContent = submit.day;
+
+        // 신청자 이름
+        document.getElementById('formName').textContent = name;
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
