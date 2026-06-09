@@ -478,6 +478,8 @@
                 filteredRequests = filteredRequests.filter(r => r.name === nameFilter);
             }
 
+            filteredRequests = [...filteredRequests].reverse();
+
             const requestsList = document.getElementById('requestsList');
             
             if (filteredRequests.length === 0) {
